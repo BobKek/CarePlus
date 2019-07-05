@@ -1,0 +1,61 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+@{
+    Layout = null;
+}
+<html>
+<head>
+    <link href="~/lib/bootstrap/dist/css/bootstrapLogin.css" rel="stylesheet" id="bootstrap-css">
+    <script src="~/lib/bootstrap/dist/css/bootstrapLogin.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+</head>
+<body style="background: url('@Url.Content("~/images/LoginImage.jpg")')">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="wrap">
+                    <p class="form-title">
+                        Sign In
+                    </p>
+                    <form class="login" method="post">
+                        <input asp-for="Input.Username" class="form-control" placeholder="Username" />
+                        <span asp-validation-for="Input.Username" class="text-danger"></span>
+                        <!--<input type="text" placeholder="Username" />
+    <input type="password" placeholder="Password" />-->
+                        <input asp-for="Input.Password" class="form-control" placeholder="Password"/>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        <input type="submit" value="Sign In" class="btn btn-success btn-sm" />
+                        <div class="remember-forgot">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input asp-for="Input.RememberMe" />
+                                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 forgot-pass-content">
+                                    <!--<a href="javascript:void(0)" class="forgot-pass">Forgot Password</a>-->
+                                    <a asp-page="./ForgotPassword">Forgot Password</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

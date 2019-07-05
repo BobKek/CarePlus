@@ -1,0 +1,73 @@
+﻿@model Clinic.Models.RegistrationBinding
+
+@{
+    ViewData["Title"] = "Add";
+    Layout = null;
+}
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<!------ Include the above in your HEAD tag ---------->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="~/lib/bootstrap/dist/css/bootstrapLogin.css" rel="stylesheet" id="bootstrap-css">
+    <script src="~/lib/bootstrap/dist/css/bootstrapLogin.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body style="background: url('@Url.Content("~/images/LoginImage.jpg")')">
+    <!-- if you want to create login page and register page together in one page ...you have to only chnage his name...that's it...                 -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="wrapR">
+                    <p class="form-title">
+                        Register
+                    </p>
+                    <br />
+                    <ul class="nav nav-pills">
+
+                        <li class="" style="width:auto; margin-bottom:-5%; margin-left:21%"><a class="btn btn-lg btn-default" data-toggle="tab" href="#doctor">Doctor</a></li>
+
+                        <li class="" style="width:auto; margin-bottom:-5%"><a class="btn btn-lg btn-default" data-toggle="tab" href="#assistant">Assistant</a></li>
+
+                        <li class=" " style="width:auto; margin-bottom:-5%"><a class=" btn btn-lg btn-default" data-toggle="tab" href="#company">Company</a></li>
+
+                    </ul>
+                    <br />
+                    
+                    <div class="tab-content">
+                        <div id="doctor" class="tab-pane fade in active">
+
+                            @await Html.PartialAsync("_CreateDoctorPartial", Model.DoctorModel)
+
+                        </div>
+                        @*<div id="assistant" class="tab-pane fade">
+
+                            @await Html.PartialAsync("_CreateDoctorPartial", Model.DoctorModel)
+
+                        </div>
+                        <div id="company" class="tab-pane fade">
+
+                            @await Html.PartialAsync("_CreateDoctorPartial", Model.DoctorModel)
+
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,93 @@
+﻿@model Clinic.Models.Consultation
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Consultation</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Symptoms)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Symptoms)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Diagnosis)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Diagnosis)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Temp)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Temp)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BloodPressure)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BloodPressure)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Cost)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Cost)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Treatment)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Treatment)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.InsuranceConfirmation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.InsuranceConfirmation)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PatientId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PatientId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DoctorId)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DoctorId)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
