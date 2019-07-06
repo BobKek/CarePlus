@@ -77,6 +77,8 @@ namespace Clinic.Areas.Identity
                     {
                         var result = userManager.AddToRoleAsync(User, "Administrator");
                         result.Wait();
+                        result = userManager.AddToRoleAsync(User, "Patient");
+                        result.Wait();
                     }
                 }
             }

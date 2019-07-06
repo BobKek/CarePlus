@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Clinic.Models
+namespace Clinic.Models.BindingModels
 {
     public class RegistrationBinding
     {
-        public DoctorBindingModel DoctorModel { get; set; } = new DoctorBindingModel();
+        public DoctorBindingModel DoctorModel { get; set; }
+        public string MyString { get; set; }
     }
 }

@@ -4,98 +4,48 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h1>Manage Doctors</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <h2><a asp-action="Create">Add new Consultation</a></h2>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Symptoms)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Diagnosis)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Temp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BloodPressure)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cost)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Treatment)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.InsuranceConfirmation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PatientId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DoctorId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Symptoms)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Diagnosis)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Temp)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BloodPressure)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Treatment)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.InsuranceConfirmation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PatientId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DoctorId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="table-container">
+    <h2 style="text-align:center;">Consultations</h2>
+    <ul class="responsive-table">
+        <li class="table-header">
+            <div class="col col-1">@Html.DisplayNameFor(model => model.Title)</div>
+            <div class="col col-1">@Html.DisplayNameFor(model => model.Type)</div>
+            <div class="col col-1">@Html.DisplayNameFor(model => model.Date)</div>
+            <div class="col col-1">@Html.DisplayNameFor(model => model.Symptoms)</div>
+            <div class="col col-1">@Html.DisplayNameFor(model => model.Diagnosis)</div>
+            <div class="col col-3">@Html.DisplayNameFor(model => model.Temp)</div>
+            <div class="col col-3">@Html.DisplayNameFor(model => model.BloodPressure)</div>
+            <div class="col col-3">@Html.DisplayNameFor(model => model.Cost)</div>
+            <div class="col col-3">@Html.DisplayNameFor(model => model.Treatment)</div>
+            <div class="col col-3">Insurance</div>
+            <div class="col col-3">@Html.DisplayNameFor(model => model.PatientId)</div>
+            <div class="col col-4"></div>
+            <div class="col col-4"></div>
+            <div class="col col-4"></div>
+        </li>
+        @foreach (var item in Model)
+        {
+            <li class="table-row">
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Title)">@Html.DisplayFor(modelItem => item.Title)</div>
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Type)">@Html.DisplayFor(modelItem => item.Type)</div>
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Date)">@Html.DisplayFor(modelItem => item.Date)</div>
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Symptoms)">@Html.DisplayFor(modelItem => item.Symptoms)</div>
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Diagnosis)">@Html.DisplayFor(modelItem => item.Diagnosis)</div>
+                <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.Temp)">@Html.DisplayFor(modelItem => item.Temp)</div>
+                <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.BloodPressure)">@Html.DisplayFor(modelItem => item.BloodPressure)</div>
+                <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.Cost)">@Html.DisplayFor(modelItem => item.Cost)</div>
+                <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.Treatment)">@Html.DisplayFor(modelItem => item.Treatment)</div>
+                <div class="col col-3" data-label="Insurance">@Html.DisplayFor(modelItem => item.InsuranceConfirmation)</div>
+                <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.PatientId)">@Html.DisplayFor(modelItem => item.PatientId)</div>
+                <div class="col col-4" data-label="Edit"><a asp-action="Edit" asp-route-id="@item.Id">Edit</a></div>
+                <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
+                <div class="col col-4" data-label="Delete"><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></div>
+            </li>
+        }
+    </ul>
+</div>

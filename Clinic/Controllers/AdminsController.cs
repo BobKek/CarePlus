@@ -9,6 +9,7 @@ using Clinic.Data;
 using Clinic.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Clinic.Models.BindingModels;
 
 namespace Clinic.Controllers
 {
@@ -24,6 +25,7 @@ namespace Clinic.Controllers
             _userManager = userManager;
         }
 
+
         // GET: Admins
         public async Task<IActionResult> Index()
         {
@@ -32,31 +34,22 @@ namespace Clinic.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreatePeople(DoctorBindingModel DoctorModel)
+        public async Task<IActionResult> CreatePeople(DoctorBindingModel doctorBindingModel)
         {
-            RegistrationBinding BindingModel = new RegistrationBinding();
-            BindingModel.DoctorModel = DoctorModel;
-            Doctor doctor = new Doctor();
-            doctor.Email = BindingModel.DoctorModel.Email;
-            doctor.Firstname = BindingModel.DoctorModel.Firstname;
-            doctor.Lastname = BindingModel.DoctorModel.Lastname;
-            doctor.Gender = BindingModel.DoctorModel.Gender;
-            doctor.Specialty = BindingModel.DoctorModel.Specialty;
-            doctor.Address = BindingModel.DoctorModel.Address;
             if (ModelState.IsValid)
             {
                 IdentityUser doctorUser = new IdentityUser();
-                doctorUser.Email = doctor.Email;
-                doctorUser.UserName = doctor.UserName;
+                doctorUser.Email = doctorBindingModel.Email;
+                doctorUser.UserName = doctorBindingModel.UserName;
                 var Password = "Admin123#";
                 doctorUser.EmailConfirmed = true;
                 doctorUser.PhoneNumberConfirmed = true;
                 doctorUser.TwoFactorEnabled = false;
                 doctorUser.LockoutEnabled = true;
                 doctorUser.AccessFailedCount = 0;
-                doctorUser.NormalizedEmail = doctor.Email.Normalize();
-                doctorUser.NormalizedUserName = doctor.UserName.Normalize();
-                doctorUser.PhoneNumber = doctor.PhoneNumber;
+                doctorUser.NormalizedEmail = doctorBindingModel.Email.Normalize();
+                doctorUser.NormalizedUserName = doctorBindingModel.UserName.Normalize();
+                doctorUser.PhoneNumber = doctorBindingModel.PhoneNumber;
 
                 PasswordHasher<IdentityUser> hasher = new PasswordHasher<IdentityUser>();
                 var PasswordHash = hasher.HashPassword(doctorUser, Password);
@@ -68,19 +61,22 @@ namespace Clinic.Controllers
                 {
                     var result = _userManager.AddToRoleAsync(doctorUser, "Doctor");
                     result.Wait();
+                    Doctor doctor = new Doctor();
+                    
                     doctor.UserId = doctorUser.Id;
-                    _context.Add(doctor);
+                    //_context.Add(doctor);
                 }
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Doctors");
             }
-            return View("Add", BindingModel);
+            return View("Add");
         }
 
+        [HttpGet]
         public IActionResult CreatePeople()
         {
-            return View("Add", new RegistrationBinding());
+            return View("Add");
         }
 
         // GET: Admins/Details/5

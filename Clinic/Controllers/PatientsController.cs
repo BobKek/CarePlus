@@ -8,22 +8,42 @@ using Microsoft.EntityFrameworkCore;
 using Clinic.Data;
 using Clinic.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Clinic.Controllers
 {
-    [Authorize(Roles = "Administrator, Patient")]
+    [Authorize]
     public class PatientsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public PatientsController(ApplicationDbContext context)
+        public PatientsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Patients
         public async Task<IActionResult> Index()
         {
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+            IList<string> roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Administrator"))
+            {
+                return View(await _context.Patient.ToListAsync());
+            }
+            if (roles.Contains("Doctor"))
+            {
+                Doctor doctor = _context.Doctor.Where(d => d.UserId.Equals(user.Id)).Single();
+                IQueryable<Consultation> consultations = _context.Consultation.Where(c => c.DoctorId.Equals(doctor.Id));
+                List<Patient> patients = new List<Patient>();
+                foreach (Consultation c in consultations)
+                {
+                    patients.Add(_context.Patient.Where(p => p.Id.Equals(c.PatientId)).Single());
+                }
+                return View(patients);
+            }
             return View(await _context.Patient.ToListAsync());
         }
 
@@ -46,6 +66,7 @@ namespace Clinic.Controllers
         }
 
         // GET: Patients/Create
+        [Authorize(Roles = "Administrator, Assistant")]
         public IActionResult Create()
         {
             return View();
@@ -56,6 +77,7 @@ namespace Clinic.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator, Assistant")]
         public async Task<IActionResult> Create([Bind("Firstname,Lastname,Address,BloodType,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] Patient patient)
         {
             if (ModelState.IsValid)

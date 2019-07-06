@@ -1,5 +1,11 @@
-body {
+.LoginBody {
     background-size: cover;
+    padding: 0;
+    margin: 0;
+    background: url(/images/LoginImage.jpg)
+}
+
+.RegisterBody {
     padding: 0;
     margin: 0;
 }
@@ -15,15 +21,17 @@ body {
 
 .wrapR {
     width: 50%;
-    margin-top: 15%;
-    margin-left: -20%;
+}
+.Registercontainer {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
 }
 
-
 form.register input[type="text"], form.register input[type="password"], form.register input[type="email"] {
-    width: 150%;
-    margin: 0;
-    padding: 5% 10%;
+    width: 400%;
+    padding: 8% 10%;
     background: 0;
     border: 0;
     border-bottom: 1px solid #6EA7B2;
@@ -31,11 +39,16 @@ form.register input[type="text"], form.register input[type="password"], form.reg
     font-style: italic;
     font-size: 20px;
     font-weight: 400;
+    padding-left:40%;
     letter-spacing: 1px;
     margin-bottom: 5px;
-    margin-left: -30%;
+    margin-left: 130%;
     color: #7AB5BD;
     outline: 0;
+}
+form.register input[type="submit"] {
+    margin-left: 250%;
+    margin-top: 13%
 }
 
 p.form-title {
@@ -47,6 +60,11 @@ p.form-title {
     margin-top: 5%;
     text-transform: uppercase;
     letter-spacing: 4px;
+}
+form.register span {
+    color:rebeccapurple;
+    width:5000%;
+    margin-left:50%;
 }
 
 form {

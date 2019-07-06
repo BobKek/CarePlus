@@ -6,13 +6,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Clinic.Models
+namespace Clinic.Models.BindingModels
 {
     [BindProperties]
-    public class DoctorBindingModel : PageModel
+    public class DoctorBindingModel
     {
         [Required]
-        [MaxLength(256, ErrorMessage = "Max Length is 256 Chars")]
+        [MaxLength(2, ErrorMessage = "Max Length is 256 Chars")]
         public string Firstname { get; set; }
         [Required]
         [MaxLength(256, ErrorMessage = "Max Length is 256 Chars")]

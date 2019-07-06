@@ -25,12 +25,19 @@ namespace Clinic.Controllers
         }
 
         // GET: Doctors
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Doctor.ToListAsync());
         }
 
+        public IActionResult Consult()
+        {
+            return RedirectToAction("Create", "Consultations");
+        }
+
         // GET: Doctors/Details/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,6 +56,7 @@ namespace Clinic.Controllers
         }
 
         // GET: Doctors/Create
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             return View();
@@ -59,6 +67,7 @@ namespace Clinic.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create([Bind("Firstname,Lastname,Gender,Specialty,Address,UserName,Email,PhoneNumber")] Doctor doctor)
         {
             if (ModelState.IsValid)
@@ -97,6 +106,7 @@ namespace Clinic.Controllers
         }
 
         // GET: Doctors/Edit/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -117,6 +127,7 @@ namespace Clinic.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int id, [Bind("Firstname,Lastname,Gender,Specialty,Address,UserId,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] Doctor doctor)
         {
             if (id != doctor.Id)
@@ -148,6 +159,7 @@ namespace Clinic.Controllers
         }
 
         // GET: Doctors/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -168,6 +180,7 @@ namespace Clinic.Controllers
         // POST: Doctors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var doctor = await _context.Doctor.FindAsync(id);
