@@ -23,8 +23,45 @@
         <li><a asp-controller="Doctors" asp-action="Index">Doctors</a></li>
         <li><a asp-controller="Assistants" asp-action="Index">Assistants</a></li>
         <li><a asp-controller="InsuranceCompanies" asp-action="Index">Insurance Companies</a></li>
-        <li><a asp-area="Identity" asp-page="/Account/Register">Inbox</a></li>
-        <li><a asp-area="Identity" asp-page="/Account/Register">Reminder</a></li>
+        <li><a asp-controller="Patients" asp-action="Index">Patients</a></li>
+        <li><a asp-controller="Consultations" asp-action="Index">Consultations</a></li>
+        <li><a>Inbox</a></li>
+        <li><a>Reminder</a></li>
         <li><a asp-controller="Admins" asp-action="CreatePeople">Create User</a></li>
+    </ul>
+}
+
+else if (User.IsInRole("Doctor"))
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li><a asp-controller="Patients" asp-action="Index">Patients</a></li>
+        <li><a asp-controller="Consultations" asp-action="Index">Consultations</a></li>
+        <li><a>Appointments</a></li>
+    </ul>
+}
+
+else if (User.IsInRole("Assistant"))
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li><a asp-controller="Patients" asp-action="Index">Patients</a></li>
+        <li><a asp-controller="Consultations" asp-action="Index">Consultations</a></li>
+        <li><a>Appointments</a></li>
+    </ul>
+}
+
+else if (User.IsInRole("Patient"))
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li><a>Treatments</a></li>
+        <li><a asp-controller="Comsultations" asp-action="Index">Consultations</a></li>
+        <li><a asp-controller="Doctors" asp-action="Index">Search Doctors</a></li>
+        <li><a>Appointments</a></li>
+    </ul>
+}
+
+else if (User.IsInRole("InsuranceCompany"))
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li><a>Reports</a></li>
     </ul>
 }

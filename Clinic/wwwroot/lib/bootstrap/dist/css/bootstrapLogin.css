@@ -30,8 +30,8 @@
 }
 
 form.register input[type="text"], form.register input[type="password"], form.register input[type="email"] {
-    width: 400%;
-    padding: 8% 10%;
+    width: 70%;
+    padding: 3% 10%;
     background: 0;
     border: 0;
     border-bottom: 1px solid #6EA7B2;
@@ -39,32 +39,37 @@ form.register input[type="text"], form.register input[type="password"], form.reg
     font-style: italic;
     font-size: 20px;
     font-weight: 400;
-    padding-left:40%;
     letter-spacing: 1px;
     margin-bottom: 5px;
-    margin-left: 130%;
+    margin-left: 10%;
     color: #7AB5BD;
     outline: 0;
 }
 form.register input[type="submit"] {
-    margin-left: 250%;
-    margin-top: 13%
+    margin-left: 22%;
 }
 
 p.form-title {
     font-family: 'Open Sans', sans-serif;
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 600;
-    text-align: center;
+    margin-left: 25%;
     color: #7AB5BD;
-    margin-top: 5%;
+    margin-top: 2%;
+    margin-bottom: -1%;
     text-transform: uppercase;
     letter-spacing: 4px;
 }
 form.register span {
-    color:rebeccapurple;
-    width:5000%;
-    margin-left:50%;
+    color: maroon;
+    width:110%;
+    margin-left:15%;
+}
+
+.switch {
+    width: auto;
+    padding-right: 2%;
+    margin-bottom: -4%;
 }
 
 form {

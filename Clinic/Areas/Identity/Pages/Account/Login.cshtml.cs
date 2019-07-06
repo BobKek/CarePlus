@@ -82,15 +82,17 @@ namespace Clinic.Areas.Identity.Pages.Account
 
                     _logger.LogInformation("User logged in.");
 
-                    if (roles.Contains("Administrator"))
-                    {
-                        return RedirectToAction("Index", "Admins");
-                    }
-                    if (roles.Contains("InsuranceCompany"))
-                    {
-                        return RedirectToAction("Index", "InsuranceCompany");
-                    }
-                    return RedirectToAction("Index", roles[0] + "s");
+                    //if (roles.Contains("Administrator"))
+                    //{
+                    //    return RedirectToAction("Index", "Admins");
+                    //}
+                    //if (roles.Contains("InsuranceCompany"))
+                    //{
+                    //    return RedirectToAction("Index", "InsuranceCompany");
+                    //}
+
+                    return RedirectToAction("Index", "Home");
+                    //return RedirectToAction("Index", roles[0] + "s");
                     //return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
