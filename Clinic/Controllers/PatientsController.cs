@@ -36,15 +36,27 @@ namespace Clinic.Controllers
             if (roles.Contains("Doctor"))
             {
                 Doctor doctor = _context.Doctor.Where(d => d.UserId.Equals(user.Id)).Single();
-                IQueryable<Consultation> consultations = _context.Consultation.Where(c => c.DoctorId.Equals(doctor.Id));
-                List<Patient> patients = new List<Patient>();
-                foreach (Consultation c in consultations)
-                {
-                    patients.Add(_context.Patient.Where(p => p.Id.Equals(c.PatientId)).Single());
-                }
+                var patients = GetPatientsListForDoctor(doctor.Id);
                 return View(patients);
             }
+            if (roles.Contains("Assistant"))
+            {
+                Assistant assistant = _context.Assistant.Where(a => a.UserId.Equals(user.Id)).Single();
+                GetPatientsListForDoctor(assistant.DoctorId);
+
+            }
             return View(await _context.Patient.ToListAsync());
+        }
+
+        private List<Patient> GetPatientsListForDoctor(int doctorId)
+        {
+            IQueryable<Consultation> consultations = _context.Consultation.Where(c => c.DoctorId.Equals(doctorId));
+            List<Patient> patients = new List<Patient>();
+            foreach (Consultation c in consultations)
+            {
+                patients.Add(_context.Patient.Where(p => p.Id.Equals(c.PatientId)).Single());
+            }
+            return patients;
         }
 
         // GET: Patients/Details/5

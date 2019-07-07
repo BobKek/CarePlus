@@ -34,17 +34,26 @@ namespace Clinic.Controllers
         {
             IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
             IList<string> roles = await _userManager.GetRolesAsync(user);
+            Doctor doctor = null;
             if (roles.Contains("Administrator"))
             {
                 return View(await _context.Consultation.ToListAsync());
             }
             else if (roles.Contains("Patient"))
             {
-                Patient patient = _context.Patient.Where(p => p.Id.Equals(user.Id)).Single();
+                Patient patient = _context.Patient.Where(p => p.UserId.Equals(user.Id)).Single();
                 IQueryable<Consultation> patConsultations = _context.Consultation.Where(c => c.PatientId.Equals(patient.Id));
                 return View(patConsultations);
             }
-            Doctor doctor = _context.Doctor.Where(d => d.UserId.Equals(user.Id)).Single();
+            else if (roles.Contains("Assistant"))
+            {
+                Assistant assistant = _context.Assistant.Where(a => a.UserId.Equals(user.Id)).Single();
+                doctor = _context.Doctor.Where(d => d.Id.Equals(assistant.DoctorId)).Single();
+            }
+            else
+            {
+                doctor = _context.Doctor.Where(d => d.UserId.Equals(user.Id)).Single();
+            }
 
             var consultations = _context.Consultation.Where(c => c.DoctorId.Equals(doctor.Id));
             return View(consultations);

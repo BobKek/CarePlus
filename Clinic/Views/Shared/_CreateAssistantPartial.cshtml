@@ -1,12 +1,12 @@
-﻿@model Clinic.Models.BindingModels.DoctorBindingModel
+﻿@model Clinic.Models.BindingModels.AssistantBindingModel
 
 @{
-    ViewData["Title"] = "Create Doctor";
+    ViewData["Title"] = "Create Assistant";
     Layout = null;
 }
 <div class="row">
     <div class="col-md-10">
-        <form id="regDoctor" class="register" style="width:80%;" asp-controller="Admins" asp-action="CreateDoctor" method="post">
+        <form id="regAssistant" class="register" style="width:80%;" asp-controller="Admins" asp-action="CreateAssistant" method="post">
             <div asp-validation-summary="ModelOnly"></div>
             <div>
                 <input asp-for="Firstname" placeholder="First Name" class="form-control" />
@@ -15,14 +15,6 @@
             <div>
                 <input asp-for="Lastname" placeholder="Last Name" class="form-control" />
                 <span asp-validation-for="Lastname"></span>
-            </div>
-            <div>
-                <input asp-for="Gender" placeholder="Gender" class="form-control" />
-                <span asp-validation-for="Gender"></span>
-            </div>
-            <div>
-                <input asp-for="Specialty" placeholder="Speciality" class="form-control" />
-                <span asp-validation-for="Specialty"></span>
             </div>
             <div>
                 <input asp-for="Address" placeholder="Address" class="form-control" />
@@ -41,6 +33,10 @@
                 <span asp-validation-for="PhoneNumber"></span>
             </div>
             <div>
+                <!--<select asp-for="DoctorId" asp-items="@(new SelectList(ViewBag.DoctorsList, "Id", "Firstname"))" class="form-control"></select>-->
+                <select asp-for="DoctorId" asp-items="@ViewBag.DoctorsList" class="form-control"></select>
+            </div>
+            <div>
                 <input asp-for="Password" placeholder="Password" class="form-control" />
                 <span asp-validation-for="Password"></span>
             </div>
@@ -50,7 +46,7 @@
             </div>
         </form>
         <div class="form-group">
-            <input form="regDoctor" type="submit" value="Create" style="margin-left:27%;" class="btn btn-lg btn-default" />
+            <input form="regAssistant" type="submit" value="Create" style="margin-left:27%;" class="btn btn-lg btn-default" />
             <a asp-controller="Home" asp-action="Index" style="margin-left: 7%; border-bottom-width:10px;"><button class="btn btn-lg btn-default">Cancel</button></a>
         </div>
     </div>

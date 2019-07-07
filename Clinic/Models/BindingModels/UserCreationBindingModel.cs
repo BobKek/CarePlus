@@ -10,15 +10,8 @@ namespace Clinic.Models.BindingModels
     [BindProperties]
     public class UserCreationBindingModel
     {
-        [Required]
-        [MaxLength(2, ErrorMessage = "Max Length is 256 Chars")]
-        public string Firstname { get; set; }
-
-        [Required]
         [MaxLength(256, ErrorMessage = "Max Length is 256 Chars")]
-        public string Lastname { get; set; }
-
-        [MaxLength(256, ErrorMessage = "Max Length is 256 Chars")]
+        [Required]
         public string Address { get; set; }
 
         [Required]
