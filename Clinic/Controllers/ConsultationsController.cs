@@ -8,14 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Clinic.Data;
 using Clinic.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Clinic.Models.BindingModels;
-using System.Collections;
 
 namespace Clinic.Controllers
 {
-    [Authorize(Roles = "Administrator, Doctor, Assistant, Patient")]
+    [Authorize(Roles = "Administrator, Doctor, Patient, Assistant")]
     public class ConsultationsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -37,7 +34,7 @@ namespace Clinic.Controllers
             Doctor doctor = null;
             if (roles.Contains("Administrator"))
             {
-                return View(await _context.Consultation.ToListAsync());
+                return View(_context.Consultation.Include(c => c.Doctor).Include(c => c.Patient));
             }
             else if (roles.Contains("Patient"))
             {
@@ -55,7 +52,7 @@ namespace Clinic.Controllers
                 doctor = _context.Doctor.Where(d => d.UserId.Equals(user.Id)).Single();
             }
 
-            var consultations = _context.Consultation.Where(c => c.DoctorId.Equals(doctor.Id));
+            var consultations = _context.Consultation.Include(c => c.Doctor).Include(c => c.Patient).Where(c => c.Doctor.Id.Equals(doctor.Id));
             return View(consultations);
         }
 
@@ -68,6 +65,8 @@ namespace Clinic.Controllers
             }
 
             var consultation = await _context.Consultation
+                .Include(c => c.Doctor)
+                .Include(c => c.Patient)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (consultation == null)
             {
@@ -78,8 +77,11 @@ namespace Clinic.Controllers
         }
 
         // GET: Consultations/Create
+        [Authorize(Roles = "Administrator, Doctor")]
         public IActionResult Create()
         {
+            ViewData["DoctorId"] = new SelectList(_context.Doctor, "Id", "Firstname");
+            ViewData["PatientId"] = new SelectList(_context.Patient, "Id", "Firstname");
             return View();
         }
 
@@ -88,40 +90,33 @@ namespace Clinic.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ConsultationBindingModel model)
+        [Authorize(Roles = "Administrator, Doctor")]
+        public async Task<IActionResult> Create([Bind("Id,Title,Type,Date,Symptoms,Diagnosis,Temp,BloodPressure,Cost,Treatment,InsuranceConfirmation,PatientId,DoctorId")] Consultation consultation)
         {
             if (ModelState.IsValid)
             {
-                Consultation consultation = new Consultation();
-                consultation.BloodPressure = model.BloodPressure;
-                consultation.Cost = model.Cost;
-                consultation.Date = model.Date;
-                consultation.Diagnosis = model.Diagnosis;
-                consultation.InsuranceConfirmation = model.InsuranceConfirmation;
-                consultation.Symptoms = model.Symptoms;
-                consultation.Temp = model.Temp;
-                consultation.Title = model.Title;
-                consultation.Treatment = model.Treatment;
-                consultation.Type = model.Type;
-                
-                Patient patient = _context.Patient.Where(p => p.Email.Equals(model.PatientEmail)).Single();
-                if (patient != null)
+                IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+                IList<string> roles = await _userManager.GetRolesAsync(user);
+                if (roles.Contains("Doctor") && !roles.Contains("Administrator"))
                 {
-                    consultation.PatientId = patient.Id;
-                    IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
                     Doctor doctor = _context.Doctor.Where(d => d.UserId.Equals(user.Id)).Single();
-
+                    Patient patient = _context.Patient.Where(p => p.Id.Equals(consultation.PatientId)).Single();
+                    consultation.Doctor = doctor;
+                    consultation.Patient = patient;
                     consultation.DoctorId = doctor.Id;
-                    _context.Add(consultation);
-                    await _context.SaveChangesAsync();
+                    consultation.PatientId = patient.Id;
                 }
-                
+                _context.Add(consultation);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View();
+            ViewData["DoctorId"] = new SelectList(_context.Doctor, "Id", "Firstname", consultation.DoctorId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "Id", "Firstname", consultation.PatientId);
+            return View(consultation);
         }
 
         // GET: Consultations/Edit/5
+        [Authorize(Roles = "Administrator, Doctor")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -134,6 +129,8 @@ namespace Clinic.Controllers
             {
                 return NotFound();
             }
+            ViewData["DoctorId"] = new SelectList(_context.Doctor, "Id", "Firstname", consultation.DoctorId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "Id", "Firstname", consultation.PatientId);
             return View(consultation);
         }
 
@@ -142,6 +139,7 @@ namespace Clinic.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator, Doctor")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Type,Date,Symptoms,Diagnosis,Temp,BloodPressure,Cost,Treatment,InsuranceConfirmation,PatientId,DoctorId")] Consultation consultation)
         {
             if (id != consultation.Id)
@@ -169,10 +167,13 @@ namespace Clinic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["DoctorId"] = new SelectList(_context.Doctor, "Id", "Firstname", consultation.DoctorId);
+            ViewData["PatientId"] = new SelectList(_context.Patient, "Id", "Firstname", consultation.PatientId);
             return View(consultation);
         }
 
         // GET: Consultations/Delete/5
+        [Authorize(Roles = "Administrator, Doctor")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -181,6 +182,8 @@ namespace Clinic.Controllers
             }
 
             var consultation = await _context.Consultation
+                .Include(c => c.Doctor)
+                .Include(c => c.Patient)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (consultation == null)
             {
@@ -193,6 +196,7 @@ namespace Clinic.Controllers
         // POST: Consultations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator, Doctor")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var consultation = await _context.Consultation.FindAsync(id);

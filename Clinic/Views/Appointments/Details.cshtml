@@ -1,0 +1,66 @@
+﻿@model Clinic.Models.Appointment
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Appointment</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Patient.Firstname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Patient.Firstname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Patient.Lastname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Patient.Lastname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Doctor.Firstname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Doctor.Firstname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Doctor.Lastname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Doctor.Lastname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Time)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Time)
+        </dd>
+        <dt>
+            P-@Html.DisplayNameFor(model => model.Patient.Firstname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Patient.Firstname)
+        </dd>
+        <dt>
+            P-@Html.DisplayNameFor(model => model.Patient.Lastname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Patient.Lastname)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

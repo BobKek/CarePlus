@@ -1,51 +1,79 @@
 ﻿@model IEnumerable<Clinic.Models.Consultation>
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Manage Doctors</h1>
+@if (User.IsInRole("Administrator") || User.IsInRole("Doctor") || User.IsInRole("Assistant"))
+{
+    <h1>Manage Consultations</h1>
+    @if (User.IsInRole("Administrator") || User.IsInRole("Doctor"))
+    {
+        <p>
+            <h2><a asp-action="Create">Add new Consultation</a></h2>
+        </p>
+    }
+}
 
-<p>
-    <h2><a asp-action="Create">Add new Consultation</a></h2>
-</p>
 <div class="table-container">
     <h2 style="text-align:center;">Consultations</h2>
     <ul class="responsive-table">
         <li class="table-header">
             <div class="col col-1">@Html.DisplayNameFor(model => model.Title)</div>
             <div class="col col-1">@Html.DisplayNameFor(model => model.Type)</div>
-            <div class="col col-1">@Html.DisplayNameFor(model => model.Date)</div>
+            <div class="col col-3">@Html.DisplayNameFor(model => model.Date)</div>
             <div class="col col-1">@Html.DisplayNameFor(model => model.Symptoms)</div>
             <div class="col col-1">@Html.DisplayNameFor(model => model.Diagnosis)</div>
-            <div class="col col-3">@Html.DisplayNameFor(model => model.Temp)</div>
-            <div class="col col-3">@Html.DisplayNameFor(model => model.BloodPressure)</div>
+            <div class="col col-2">@Html.DisplayNameFor(model => model.Temp)</div>
+            <div class="col col-2" style="font-size:80%; margin-top:auto;">@Html.DisplayNameFor(model => model.BloodPressure)</div>
             <div class="col col-3">@Html.DisplayNameFor(model => model.Cost)</div>
             <div class="col col-3">@Html.DisplayNameFor(model => model.Treatment)</div>
             <div class="col col-3">Insurance</div>
-            <div class="col col-3">@Html.DisplayNameFor(model => model.PatientId)</div>
-            <div class="col col-4"></div>
-            <div class="col col-4"></div>
-            <div class="col col-4"></div>
+            <div class="col col-3">P-@Html.DisplayNameFor(model => model.Patient.Firstname)</div>
+            <div class="col col-3">P-@Html.DisplayNameFor(model => model.Patient.Lastname)</div>
+            @if (User.IsInRole("Administrator") || User.IsInRole("Doctor"))
+            {
+                <div class="col col-4"></div>
+                <div class="col col-4"></div>
+                <div class="col col-4"></div>
+            }
+            else
+            {
+                <div class="col col-4"></div>
+            }
+
         </li>
         @foreach (var item in Model)
         {
-            <li class="table-row">
-                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Title)">@Html.DisplayFor(modelItem => item.Title)</div>
-                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Type)">@Html.DisplayFor(modelItem => item.Type)</div>
-                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Date)">@Html.DisplayFor(modelItem => item.Date)</div>
-                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Symptoms)">@Html.DisplayFor(modelItem => item.Symptoms)</div>
-                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Diagnosis)">@Html.DisplayFor(modelItem => item.Diagnosis)</div>
-                <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.Temp)">@Html.DisplayFor(modelItem => item.Temp)</div>
-                <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.BloodPressure)">@Html.DisplayFor(modelItem => item.BloodPressure)</div>
-                <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.Cost)">@Html.DisplayFor(modelItem => item.Cost)</div>
-                <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.Treatment)">@Html.DisplayFor(modelItem => item.Treatment)</div>
-                <div class="col col-3" data-label="Insurance">@Html.DisplayFor(modelItem => item.InsuranceConfirmation)</div>
-                <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.PatientId)">@Html.DisplayFor(modelItem => item.PatientId)</div>
+        <li class="table-row">
+            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Title)">@Html.DisplayFor(modelItem => item.Title)</div>
+            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Type)">@Html.DisplayFor(modelItem => item.Type)</div>
+            <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.Date)">@Html.DisplayFor(modelItem => item.Date)</div>
+            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Symptoms)">@Html.DisplayFor(modelItem => item.Symptoms)</div>
+            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Diagnosis)">@Html.DisplayFor(modelItem => item.Diagnosis)</div>
+            <div class="col col-2" data-label="@Html.DisplayNameFor(model => model.Temp)">@Html.DisplayFor(modelItem => item.Temp)</div>
+            <div class="col col-2" data-label="@Html.DisplayNameFor(model => model.BloodPressure)">@Html.DisplayFor(modelItem => item.BloodPressure)</div>
+            <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.Cost)">@Html.DisplayFor(modelItem => item.Cost)</div>
+            <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.Treatment)">@Html.DisplayFor(modelItem => item.Treatment)</div>
+            <div class="col col-3" data-label="Insurance">@Html.DisplayFor(modelItem => item.InsuranceConfirmation)</div>
+            <div class="col col-3" data-label="P-@Html.DisplayNameFor(model => model.Patient.Firstname)">@Html.DisplayFor(modelItem => item.Patient.Firstname)</div>
+            <div class="col col-3" data-label="P-@Html.DisplayNameFor(model => model.Patient.Lastname)">@Html.DisplayFor(modelItem => item.Patient.Lastname)</div>
+            @if (User.IsInRole("Administrator") || User.IsInRole("Doctor"))
+            {
                 <div class="col col-4" data-label="Edit"><a asp-action="Edit" asp-route-id="@item.Id">Edit</a></div>
                 <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
                 <div class="col col-4" data-label="Delete"><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></div>
-            </li>
+            }
+            else
+            {
+                <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
+            }
+
+        </li>
         }
     </ul>
 </div>

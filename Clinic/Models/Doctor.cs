@@ -13,15 +13,22 @@ namespace Clinic.Models
         [Required]
         [MaxLength(256, ErrorMessage = "Max Length is 256 Chars")]
         public string Firstname { get; set; }
+
         [Required]
         [MaxLength(256, ErrorMessage = "Max Length is 256 Chars")]
         public string Lastname { get; set; }
+
         [MaxLength(6, ErrorMessage = "Max length is 6")]
         public string Gender { get; set; }
+
         public string Specialty { get; set; }
+
         [MaxLength(256, ErrorMessage = "Max Length is 256 Chars")]
         public string Address { get; set; }
-        //[ForeignKey("AspNetUsers")]
+
+        [ForeignKey("UserId")]
+        public IdentityUser User { get; set; }
+
         public string UserId { get; set; }
     }
 }

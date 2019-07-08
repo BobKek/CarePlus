@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Clinic.Data;
 using Clinic.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Clinic.Models.BindingModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clinic.Controllers
 {
@@ -45,7 +46,11 @@ namespace Clinic.Controllers
                 GetPatientsListForDoctor(assistant.DoctorId);
 
             }
-            return View(await _context.Patient.ToListAsync());
+
+            //return View(await _context.Patient.ToListAsync());
+
+            var applicationDbContext = _context.Patient.Include(p => p.InsuranceCompany).Include(p => p.User);
+            return View(await applicationDbContext.ToListAsync());
         }
 
         private List<Patient> GetPatientsListForDoctor(int doctorId)
@@ -59,6 +64,24 @@ namespace Clinic.Controllers
             return patients;
         }
 
+        // GET: Patients/Details without Route-id
+        public async Task<IActionResult> SelfDetails()
+        {
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+            IList<string> roles = await _userManager.GetRolesAsync(user);
+            if (!roles.Contains("Patient"))
+            {
+                return NotFound();
+            }
+            var patient = _context.Patient.Where(p => p.UserId.Equals(user.Id)).Single();
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            return View("Details", patient);
+        }
+
         // GET: Patients/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -68,6 +91,8 @@ namespace Clinic.Controllers
             }
 
             var patient = await _context.Patient
+                .Include(p => p.InsuranceCompany)
+                .Include(p => p.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (patient == null)
             {
@@ -81,6 +106,7 @@ namespace Clinic.Controllers
         [Authorize(Roles = "Administrator, Assistant")]
         public IActionResult Create()
         {
+            ViewData["InsuranceId"] = new SelectList(_context.InsuranceCompany, "Id", "Name");
             return View();
         }
 
@@ -90,18 +116,53 @@ namespace Clinic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator, Assistant")]
-        public async Task<IActionResult> Create([Bind("Firstname,Lastname,Address,BloodType,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] Patient patient)
+        public async Task<IActionResult> Create(PatientBindingModel patientBindingModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(patient);
+                IdentityUser patientUser = CreateIdentityUser(patientBindingModel);
+                if (patientUser != null)
+                {
+                    var result = _userManager.AddToRoleAsync(patientUser, "Patient");
+                    result.Wait();
+                    Patient patient = new Patient();
+
+                    //Adding attributes from IdentityUser
+                    patient.Email = patientUser.Email;
+                    patient.UserName = patientUser.UserName;
+                    patient.PasswordHash = patientUser.PasswordHash;
+                    patient.EmailConfirmed = patientUser.EmailConfirmed;
+                    patient.PhoneNumberConfirmed = patientUser.PhoneNumberConfirmed;
+                    patient.TwoFactorEnabled = false;
+                    patient.LockoutEnabled = true;
+                    patient.AccessFailedCount = patientUser.AccessFailedCount;
+                    patient.NormalizedEmail = patientUser.NormalizedEmail;
+                    patient.NormalizedUserName = patientUser.NormalizedUserName;
+                    patient.PhoneNumber = patientUser.PhoneNumber;
+
+                    //Adding Patient attributes
+                    patient.Firstname = patientBindingModel.Firstname;
+                    patient.Lastname = patientBindingModel.Lastname;
+                    patient.BloodType = patientBindingModel.BloodType;
+                    patient.Address = patientBindingModel.Address;
+
+                    InsuranceCompany insComp = _context.InsuranceCompany.Where(i => i.Id.Equals(patientBindingModel.InsuranceId)).Single();
+                    patient.InsuranceCompany = insComp;
+
+                    patient.User = patientUser;
+
+                    _context.Add(patient);
+                }
+
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Patients");
             }
-            return View(patient);
+            ViewData["InsuranceId"] = new SelectList(_context.InsuranceCompany, "Id", "Name", patientBindingModel.InsuranceId);
+            return View();
         }
 
         // GET: Patients/Edit/5
+        [Authorize(Roles = "Administrator, Assistant")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -114,6 +175,8 @@ namespace Clinic.Controllers
             {
                 return NotFound();
             }
+            ViewData["InsuranceId"] = new SelectList(_context.InsuranceCompany, "Id", "Name", patient.InsuranceId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Firstname", patient.UserId);
             return View(patient);
         }
 
@@ -122,9 +185,13 @@ namespace Clinic.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Firstname,Lastname,Address,BloodType,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] Patient patient)
+        [Authorize(Roles = "Administrator, Assistant")]
+        public async Task<IActionResult> Edit(int id, [Bind("Firstname,Lastname,Address,BloodType,InsuranceId,UserName,Email,PasswordHash,PhoneNumber")] Patient patient)
         {
-            if (id != patient.Id)
+            Patient newPatient = _context.Patient.Where(p1 => p1.Id.Equals(id)).Single();
+            Task<IdentityUser> user = _userManager.FindByIdAsync(newPatient.UserId);
+            user.Wait();
+            if (user.Result == null)
             {
                 return NotFound();
             }
@@ -133,7 +200,25 @@ namespace Clinic.Controllers
             {
                 try
                 {
-                    _context.Update(patient);
+                    
+                    PasswordHasher<IdentityUser> hasher = new PasswordHasher<IdentityUser>();
+                    var PasswordHash = hasher.HashPassword(user.Result, patient.PasswordHash);
+                    user.Result.PasswordHash = PasswordHash;
+                    user.Result.UserName = patient.UserName;
+                    user.Result.Email = patient.Email;
+                    user.Result.PhoneNumber = patient.PhoneNumber;
+                    await _userManager.UpdateAsync(user.Result);
+
+                    newPatient.Firstname = patient.Firstname;
+                    newPatient.Lastname = patient.Lastname;
+                    newPatient.Address = patient.Address;
+                    newPatient.BloodType = patient.BloodType;
+                    newPatient.InsuranceId = patient.InsuranceId;
+                    newPatient.UserName = patient.UserName;
+                    newPatient.Email = patient.Email;
+                    newPatient.PhoneNumber = patient.PhoneNumber;
+                    newPatient.PasswordHash = patient.PasswordHash;
+                    _context.Update(newPatient);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -149,10 +234,13 @@ namespace Clinic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["InsuranceId"] = new SelectList(_context.InsuranceCompany, "Id", "Name", patient.InsuranceId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Firstname", patient.UserId);
             return View(patient);
         }
 
         // GET: Patients/Delete/5
+        [Authorize(Roles = "Administrator, Assistant")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -161,6 +249,8 @@ namespace Clinic.Controllers
             }
 
             var patient = await _context.Patient
+                .Include(p => p.InsuranceCompany)
+                .Include(p => p.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (patient == null)
             {
@@ -173,6 +263,7 @@ namespace Clinic.Controllers
         // POST: Patients/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Administrator, Assistant")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var patient = await _context.Patient.FindAsync(id);
@@ -184,6 +275,34 @@ namespace Clinic.Controllers
         private bool PatientExists(int id)
         {
             return _context.Patient.Any(e => e.Id == id);
+        }
+
+        public IdentityUser CreateIdentityUser(UserCreationBindingModel userCreationBindingModel)
+        {
+            IdentityUser user = new IdentityUser();
+            user.Email = userCreationBindingModel.Email;
+            user.UserName = userCreationBindingModel.UserName;
+            var Password = "Admin123#";
+            user.EmailConfirmed = true;
+            user.PhoneNumberConfirmed = true;
+            user.TwoFactorEnabled = false;
+            user.LockoutEnabled = true;
+            user.AccessFailedCount = 0;
+            user.NormalizedEmail = userCreationBindingModel.Email.Normalize();
+            user.NormalizedUserName = userCreationBindingModel.UserName.Normalize();
+            user.PhoneNumber = userCreationBindingModel.PhoneNumber;
+
+            PasswordHasher<IdentityUser> hasher = new PasswordHasher<IdentityUser>();
+            var PasswordHash = hasher.HashPassword(user, Password);
+            user.PasswordHash = PasswordHash;
+
+            var createDoctor = _userManager.CreateAsync(user);
+            createDoctor.Wait();
+            if (createDoctor.Result != null)
+            {
+                return user;
+            }
+            return null;
         }
     }
 }

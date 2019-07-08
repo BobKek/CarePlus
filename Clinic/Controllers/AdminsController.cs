@@ -25,7 +25,6 @@ namespace Clinic.Controllers
             _userManager = userManager;
         }
 
-
         // GET: Admins
         public async Task<IActionResult> Index()
         {
@@ -77,7 +76,7 @@ namespace Clinic.Controllers
                     doctor.Specialty = doctorBindingModel.Specialty;
                     doctor.Gender = doctorBindingModel.Gender;
                     doctor.Address = doctorBindingModel.Address;
-                    doctor.UserId = doctorUser.Id;
+                    doctor.User = doctorUser;
                     _context.Add(doctor);
                 }
 
@@ -123,7 +122,7 @@ namespace Clinic.Controllers
                     assistant.Firstname = assistantBindingModel.Firstname;
                     assistant.Lastname = assistantBindingModel.Lastname;
                     assistant.DoctorId = assistantBindingModel.DoctorId;
-                    assistant.UserId = assistantUser.Id;
+                    assistant.User = assistantUser;
                     _context.Add(assistant);
                 }
 
@@ -170,7 +169,7 @@ namespace Clinic.Controllers
                     insurance.Name = insuranceCompanyBindingModel.Name;
                     insurance.Address = insuranceCompanyBindingModel.Address;
                     insurance.Fax = insuranceCompanyBindingModel.Fax;
-                    insurance.UserId = insuranceUser.Id;
+                    insurance.User = insuranceUser;
                     _context.Add(insurance);
                 }
 
@@ -187,8 +186,31 @@ namespace Clinic.Controllers
             return View("Add");
         }
 
+        public async Task<IActionResult> Inbox()
+        {
+            return View(await _context.Message.ToListAsync());
+        }
+
+        // GET: Admins/Details without Route-id to display self details
+        public async Task<IActionResult> SelfDetails()
+        {
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+            IList<string> roles = await _userManager.GetRolesAsync(user);
+            if (!roles.Contains("Administrator"))
+            {
+                return NotFound();
+            }
+            var admin = _context.Admin.Where(a => a.UserId.Equals(user.Id)).Single();
+            if (admin == null)
+            {
+                return NotFound();
+            }
+
+            return View("Details", admin);
+        }
+
         // GET: Admins/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int id)
         {
             if (id == null)
             {
@@ -255,26 +277,6 @@ namespace Clinic.Controllers
             }
             return View(admin);
         }
-
-        public IActionResult CreateDoctor()
-        {
-            return View();
-        }
-
-        //public async Task<IActionResult> CreateDoctor(DoctorBindingModel bindingModel)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var admin = await _context.Admin.FindAsync(id);
-        //    if (admin == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(admin);
-        //}
 
         private bool AdminExists(int id)
         {

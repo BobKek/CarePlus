@@ -11,20 +11,36 @@ namespace Clinic.Models
     {
         [Key]
         public int Id { get; set; }
+
         public string Title { get; set; }
+
         public string Type { get; set; }
+
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
+
         public string Symptoms { get; set; }
+
         public string Diagnosis { get; set; }
+
         public string Temp { get; set; }
+
         public string BloodPressure { get; set; }
+
         public string Cost { get; set; }
+
         public string Treatment { get; set; }
+
         public string InsuranceConfirmation { get; set; }
-        [ForeignKey("Patient")]
+
+        [ForeignKey("PatientId")]
+        public Patient Patient { get; set; }
+
         public int PatientId { get; set; }
-        [ForeignKey("Doctor")]
+
+        [ForeignKey("DoctorId")]
+        public Doctor Doctor { get; set; }
+
         public int DoctorId { get; set; }
 
     }

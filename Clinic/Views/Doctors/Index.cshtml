@@ -7,34 +7,51 @@
 <h1>Manage Doctors</h1>
 
 <p>
-    <h2><a asp-action="Create">Create New</a></h2>
+    <h2><a asp-action="Create">Create New Doctor</a></h2>
 </p>
+
+<form class="search-class" asp-action="SearchDoctor" method="get">
+    <input type="text" placeholder="Search..." name="Keyword">
+    <button type="submit"><i class="fa fa-search"></i></button>
+</form>
+
 <div class="table-container">
     <h2 style="text-align:center;">Doctors</h2>
     <ul class="responsive-table">
         <li class="table-header">
-            <div class="col col-1">@Html.DisplayNameFor(model => model.Firstname)</div>
+            <div class="col col-3">@Html.DisplayNameFor(model => model.Firstname)</div>
             <div class="col col-1">@Html.DisplayNameFor(model => model.Lastname)</div>
             <div class="col col-2">@Html.DisplayNameFor(model => model.Gender)</div>
-            <div class="col col-1">@Html.DisplayNameFor(model => model.Specialty)</div>
+            <div class="col col-2">@Html.DisplayNameFor(model => model.Specialty)</div>
             <div class="col col-1">@Html.DisplayNameFor(model => model.Email)</div>
             <div class="col col-3">@Html.DisplayNameFor(model => model.PhoneNumber)</div>
-            <div class="col col-4"></div>
-            <div class="col col-4"></div>
-            <div class="col col-4"></div>
+            @if (User.IsInRole("Administrator"))
+            {
+                <div class="col col-4"></div>
+                <div class="col col-4"></div>
+                <div class="col col-4"></div>
+            }
+            else
+            {
+                <div class="col col-4"></div>
+            }
         </li>
         @foreach (var item in Model)
         {
         <li class="table-row">
-            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Firstname)">@Html.DisplayFor(modelItem => item.Firstname)</div>
+            <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.Firstname)">@Html.DisplayFor(modelItem => item.Firstname)</div>
             <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Lastname)">@Html.DisplayFor(modelItem => item.Lastname)</div>
             <div class="col col-2" data-label="@Html.DisplayNameFor(model => model.Gender)">@Html.DisplayFor(modelItem => item.Gender)</div>
-            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Specialty)">@Html.DisplayFor(modelItem => item.Specialty)</div>
+            <div class="col col-2" data-label="@Html.DisplayNameFor(model => model.Specialty)">@Html.DisplayFor(modelItem => item.Specialty)</div>
             <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Email)">@Html.DisplayFor(modelItem => item.Email)</div>
             <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.PhoneNumber)">@Html.DisplayFor(modelItem => item.PhoneNumber)</div>
-            <div class="col col-4" data-label="Edit"><a asp-action="Edit" asp-route-id="@item.Id">Edit</a></div>
+            @if (User.IsInRole("Administrator"))
+            {
+                <div class="col col-4" data-label="Edit"><a asp-action="Edit" asp-route-id="@item.Id">Edit</a></div>
+                <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
+                <div class="col col-4" data-label="Delete"><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></div>
+            }
             <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
-            <div class="col col-4" data-label="Delete"><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></div>
         </li>
         }
     </ul>

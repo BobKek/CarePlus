@@ -8,18 +8,22 @@ using Clinic.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Clinic.Models.BindingModels;
+using Clinic.Data;
 
 namespace Clinic.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _context;
         private readonly IServiceProvider _serviceProvider;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(IServiceProvider serviceProvider)
+        public HomeController(ApplicationDbContext context, IServiceProvider serviceProvider)
         {
+            _context = context;
             _serviceProvider = serviceProvider;
             _signInManager = _serviceProvider.GetRequiredService<SignInManager<IdentityUser>>();
             _userManager = _serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
@@ -40,8 +44,29 @@ namespace Clinic.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult AskAdmin()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AskAdmin(MessageBindingModel messageBindingModel)
+        {
+            if (ModelState.IsValid)
+            {
+                Message message = new Message();
+                message.Name = messageBindingModel.Name;
+                message.Email = messageBindingModel.Email;
+                message.Memo = messageBindingModel.Memo;
+                message.Subject = messageBindingModel.Subject;
+                message.Date = DateTime.Now;
+
+
+                _context.Add(message);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 

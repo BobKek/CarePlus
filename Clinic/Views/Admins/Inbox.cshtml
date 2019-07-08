@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Clinic.Models.Message>
+
+@{
+    ViewData["Title"] = "Inbox";
+}
+
+<h2>Inbox</h2>
+
+<div>
+    <h4>Messages</h4>
+    <hr />
+@foreach (var item in Model)
+{
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => item.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => item.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Memo)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => item.Memo)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Subject)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => item.Subject)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => item.Date)
+        </dd>
+    </dl>
+}
+</div>
+<div>
+    <a asp-action="Index">Back</a>
+</div>

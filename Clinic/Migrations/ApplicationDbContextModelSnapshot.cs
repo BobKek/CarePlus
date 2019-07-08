@@ -63,6 +63,8 @@ namespace Clinic.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Admin");
                 });
 
@@ -83,6 +85,10 @@ namespace Clinic.Migrations
                     b.Property<DateTime>("Time");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
 
                     b.ToTable("Appointment");
                 });
@@ -133,6 +139,10 @@ namespace Clinic.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("Assistant");
                 });
 
@@ -167,6 +177,10 @@ namespace Clinic.Migrations
                     b.Property<string>("Type");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("PatientId");
 
                     b.ToTable("Consultation");
                 });
@@ -225,6 +239,8 @@ namespace Clinic.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Doctor");
                 });
 
@@ -274,7 +290,35 @@ namespace Clinic.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("InsuranceCompany");
+                });
+
+            modelBuilder.Entity("Clinic.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<string>("Email")
+                        .IsRequired();
+
+                    b.Property<string>("Memo")
+                        .IsRequired();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256);
+
+                    b.Property<string>("Subject")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("Clinic.Models.Patient", b =>
@@ -328,6 +372,10 @@ namespace Clinic.Migrations
                     b.Property<string>("UserName");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InsuranceId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Patient");
                 });
@@ -495,6 +543,77 @@ namespace Clinic.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Clinic.Models.Admin", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Clinic.Models.Appointment", b =>
+                {
+                    b.HasOne("Clinic.Models.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Clinic.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Clinic.Models.Assistant", b =>
+                {
+                    b.HasOne("Clinic.Models.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Clinic.Models.Consultation", b =>
+                {
+                    b.HasOne("Clinic.Models.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Clinic.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Clinic.Models.Doctor", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Clinic.Models.InsuranceCompany", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Clinic.Models.Patient", b =>
+                {
+                    b.HasOne("Clinic.Models.InsuranceCompany", "InsuranceCompany")
+                        .WithMany()
+                        .HasForeignKey("InsuranceId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

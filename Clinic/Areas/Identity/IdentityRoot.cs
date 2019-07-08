@@ -1,4 +1,5 @@
 ﻿using Clinic.Data;
+using Clinic.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -77,8 +78,26 @@ namespace Clinic.Areas.Identity
                     {
                         var result = userManager.AddToRoleAsync(User, "Administrator");
                         result.Wait();
-                        result = userManager.AddToRoleAsync(User, "Patient");
-                        result.Wait();
+
+                        Admin admin = new Admin();
+                        admin.Email = "admin@clinic.com";
+                        admin.UserName = "admin";
+                        admin.PasswordHash = PasswordHash;
+                        admin.EmailConfirmed = true;
+                        admin.PhoneNumberConfirmed = true;
+                        admin.TwoFactorEnabled = false;
+                        admin.LockoutEnabled = false;
+                        admin.AccessFailedCount = 0;
+                        admin.NormalizedEmail = "admin@clinic.com";
+                        admin.NormalizedUserName = "ADMIN";
+                        admin.PhoneNumber = "0";
+
+                        admin.Firstname = "Admin";
+                        admin.Lastname = "Admin";
+                        admin.User = User;
+
+                        admin.UserId = User.Id;
+                        _context.Add(admin);
                     }
                 }
             }

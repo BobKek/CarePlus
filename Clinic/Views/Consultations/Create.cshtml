@@ -1,4 +1,8 @@
-﻿@model Clinic.Models.BindingModels.ConsultationBindingModel
+﻿@model Clinic.Models.Consultation
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 @{
     ViewData["Title"] = "Create";
@@ -63,10 +67,16 @@
                 <span asp-validation-for="InsuranceConfirmation" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PatientEmail" class="control-label"></label>
-                <input asp-for="PatientEmail" class="form-control" />
-                <span asp-validation-for="PatientEmail" class="text-danger"></span>
+                <label asp-for="PatientId" class="control-label"></label>
+                <select asp-for="PatientId" class="form-control" asp-items="ViewBag.PatientId"></select>
             </div>
+            @if (!User.IsInRole("Doctor"))
+            {
+                <div class="form-group">
+                    <label asp-for="DoctorId" class="control-label"></label>
+                    <select asp-for="DoctorId" class="form-control" asp-items="ViewBag.DoctorId"></select>
+                </div>
+            }
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
@@ -78,6 +88,3 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Clinic.Controllers
 {
-    [Authorize(Roles = "Doctor, Administrator")]
+    [Authorize(Roles = "Doctor, Administrator, Patient")]
     public class DoctorsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -25,15 +25,62 @@ namespace Clinic.Controllers
         }
 
         // GET: Doctors
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator, Patient")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Doctor.ToListAsync());
         }
 
+        public IActionResult SearchDoctor()
+        {
+            return View("Index", "Home");
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Administrator, Patient")]
+        public IActionResult SearchDoctor(string Keyword)
+        {
+            var foundDoctors = _context.Doctor.Where(d => d.Specialty.Contains(Keyword));
+            var foundDoctorsList = foundDoctors.ToList();
+            if (!foundDoctors.Any())
+            {
+                foundDoctors = _context.Doctor.Where(d => d.Email.Contains(Keyword));
+                foundDoctorsList.AddRange(foundDoctors.ToList());
+            }
+            if (!foundDoctors.Any())
+            {
+                foundDoctors = _context.Doctor.Where(d => d.Firstname.Contains(Keyword));
+                foundDoctorsList.AddRange(foundDoctors.ToList());
+            }
+            if (!foundDoctors.Any())
+            {
+                foundDoctors = _context.Doctor.Where(d => d.Lastname.Contains(Keyword));
+                foundDoctorsList.AddRange(foundDoctors.ToList());
+            }
+            return View("Index", foundDoctorsList);
+        }
+
         public IActionResult Consult()
         {
             return RedirectToAction("Create", "Consultations");
+        }
+
+        // GET: Doctors/Details without Route-id
+        public async Task<IActionResult> SelfDetails()
+        {
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+            IList<string> roles = await _userManager.GetRolesAsync(user);
+            if (!roles.Contains("Doctor"))
+            {
+                return NotFound();
+            }
+            var doctor = _context.Assistant.Where(d => d.UserId.Equals(user.Id)).Single();
+            if (doctor == null)
+            {
+                return NotFound();
+            }
+
+            return View("Details", doctor);
         }
 
         // GET: Doctors/Details/5
@@ -128,9 +175,12 @@ namespace Clinic.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Edit(int id, [Bind("Firstname,Lastname,Gender,Specialty,Address,UserId,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] Doctor doctor)
+        public async Task<IActionResult> Edit(int id, [Bind("Firstname,Lastname,Gender,Specialty,Address,UserName,Email,PasswordHash,PhoneNumber")] Doctor doctor)
         {
-            if (id != doctor.Id)
+            Doctor newDoctor = _context.Doctor.Where(d => d.Id.Equals(id)).Single();
+            Task<IdentityUser> user = _userManager.FindByIdAsync(newDoctor.UserId);
+
+            if (user.Result == null)
             {
                 return NotFound();
             }
@@ -139,7 +189,26 @@ namespace Clinic.Controllers
             {
                 try
                 {
-                    _context.Update(doctor);
+                    PasswordHasher<IdentityUser> hasher = new PasswordHasher<IdentityUser>();
+                    var PasswordHash = hasher.HashPassword(user.Result, doctor.PasswordHash);
+                    user.Result.PasswordHash = PasswordHash;
+                    user.Result.UserName = doctor.UserName;
+                    user.Result.Email = doctor.Email;
+                    user.Result.PhoneNumber = doctor.PhoneNumber;
+                    await _userManager.UpdateAsync(user.Result);
+
+
+                    newDoctor.Firstname = doctor.Firstname;
+                    newDoctor.Lastname = doctor.Lastname;
+                    newDoctor.Gender = doctor.Gender;
+                    newDoctor.Specialty = doctor.Specialty;
+                    newDoctor.Address = doctor.Address;
+                    newDoctor.UserName = doctor.UserName;
+                    newDoctor.Email = doctor.Email;
+                    newDoctor.PhoneNumber = doctor.PhoneNumber;
+                    newDoctor.PasswordHash = doctor.PasswordHash;
+                    _context.Update(newDoctor);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -155,7 +224,9 @@ namespace Clinic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(doctor);
+
+            ViewBag.Doctors = new SelectList(_context.Doctor, "Id", "Firstname");
+            return View(newDoctor);
         }
 
         // GET: Doctors/Delete/5

@@ -4,7 +4,7 @@
 @inject UserManager<IdentityUser> UserManager
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home Page - Welcome to CarePlus";
     Layout = "_Layout";
 }
 
@@ -12,10 +12,10 @@
 
 @if (SignInManager.IsSignedIn(User) && !User.IsInRole("Administrator"))
 {
-    <a asp-controller="Home" asp-action="AskAdmin">Got a Question? Ask the admin!</a>
+    <a asp-controller="Home" asp-action="AskAdmin" style="font-size: 26px;">Got a Question? Ask the admin!</a><br />
 }
 
 @if (User.IsInRole("Doctor"))
 {
-    <a asp-controller="Doctors" asp-action="Consult">Add a Consultation</a>
+    <a asp-controller="Doctors" asp-action="Consult" style="font-size: 26px;">Add a Consultation</a>
 }

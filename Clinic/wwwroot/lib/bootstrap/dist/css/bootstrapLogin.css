@@ -1,15 +1,42 @@
 .LoginBody {
+    background-image: url(/images/background.jpg);
+    background-repeat: no-repeat;
     background-size: cover;
-    padding: 0;
-    margin: 0;
-    background: url(/images/LoginImage.jpg)
+    background-attachment: fixed;
 }
 
 .RegisterBody {
-    padding: 0;
-    margin: 0;
+    background-image: url(/images/background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
+form.register::after {
+    content: '';
+    width: 70%;
+    height: 100%;
+    background-color: #83ADC0;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    margin-left: 10%;
+}
+
+form.login::after {
+    content: '';
+    width: 63%;
+    height: 55%;
+    background-color: #83ADC0;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    margin-left: 21%;
+}
 .wrap {
     width: 45%;
     height: 100%;
@@ -42,19 +69,31 @@ form.register input[type="text"], form.register input[type="password"], form.reg
     letter-spacing: 1px;
     margin-bottom: 5px;
     margin-left: 10%;
-    color: #7AB5BD;
+    color: #2F4056;
     outline: 0;
 }
 form.register input[type="submit"] {
     margin-left: 22%;
 }
 
-p.form-title {
+p.form-title-register {
     font-family: 'Open Sans', sans-serif;
     font-size: 28px;
     font-weight: 600;
     margin-left: 25%;
-    color: #7AB5BD;
+    color: #203240;
+    margin-top: 2%;
+    margin-bottom: -1%;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+}
+
+p.form-title-login {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin-left: 35%;
+    color: #203240;
     margin-top: 2%;
     margin-bottom: -1%;
     text-transform: uppercase;
@@ -90,7 +129,7 @@ form {
         font-weight: 400;
         letter-spacing: 1px;
         margin-bottom: 5px;
-        color: #7AB5BD;
+        color: #2F4056;
         outline: 0;
     }
 

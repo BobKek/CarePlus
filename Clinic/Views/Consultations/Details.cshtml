@@ -71,16 +71,28 @@
             @Html.DisplayFor(model => model.InsuranceConfirmation)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.PatientId)
+            P-@Html.DisplayNameFor(model => model.Patient.Firstname)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.PatientId)
+            @Html.DisplayFor(model => model.Patient.Firstname)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.DoctorId)
+            P-@Html.DisplayNameFor(model => model.Patient.Lastname)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.DoctorId)
+            @Html.DisplayFor(model => model.Patient.Lastname)
+        </dd>
+        <dt>
+            D-@Html.DisplayNameFor(model => model.Doctor.Firstname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Doctor.Firstname)
+        </dd>
+        <dt>
+            D-@Html.DisplayNameFor(model => model.Doctor.Lastname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Doctor.Lastname)
         </dd>
     </dl>
 </div>

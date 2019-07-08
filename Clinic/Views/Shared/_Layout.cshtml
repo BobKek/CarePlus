@@ -3,13 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Clinic</title>
+    <title>@ViewData["Title"] - CarePlus</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
         <link rel="stylesheet" href="~/css/tableStyle.css" />
         <link rel="stylesheet" href="~/css/InboxStyle.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
@@ -18,8 +19,8 @@
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
 </head>
-<body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+<body style="background-image:url(/images/background.jpg); background-repeat:no-repeat; background-size:cover;">
+    <nav class="navbar navbar-inverse navbar-fixed-top" style="background-image: url(/images/bar.png); border:0; height:65px">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -28,7 +29,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Clinic</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">CarePlus</a>
             </div>
             <div class="navbar-collapse collapse">
                 <partial name="_LoginPartial" />
@@ -42,7 +43,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2019 - Clinic - Done by: Mira Hariri &amp; Ibrahim Owaidat</p>
+            <p>&copy; 2019 - CarePlus - Done by: Mira Hariri &amp; Ibrahim Owaidat</p>
         </footer>
     </div>
 

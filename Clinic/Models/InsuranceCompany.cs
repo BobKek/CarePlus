@@ -12,10 +12,16 @@ namespace Clinic.Models
     {
         [Required]
         public string Name { get; set; }
+
         [Required]
         public string Address { get; set; }
+
         public string Fax { get; set; }
-        [ForeignKey("AspNetUsers")]
+
+        [ForeignKey("UserId")]
+        public IdentityUser User { get; set; }
+
         public string UserId { get; set; }
+
     }
 }

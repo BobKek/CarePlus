@@ -7,22 +7,45 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Clinic.Data;
 using Clinic.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Clinic.Controllers
 {
+    [Authorize(Roles = "Administrator, InsuranceCompany")]
     public class InsuranceCompaniesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public InsuranceCompaniesController(ApplicationDbContext context)
+        public InsuranceCompaniesController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: InsuranceCompanies
         public async Task<IActionResult> Index()
         {
             return View(await _context.InsuranceCompany.ToListAsync());
+        }
+
+        // GET: InsuranceCompanies/Details without Route-id
+        public async Task<IActionResult> SelfDetails()
+        {
+            IdentityUser user = await _userManager.GetUserAsync(HttpContext.User);
+            IList<string> roles = await _userManager.GetRolesAsync(user);
+            if (!roles.Contains("InsuranceCompany"))
+            {
+                return NotFound();
+            }
+            var insCom = _context.InsuranceCompany.Where(i => i.UserId.Equals(user.Id)).Single();
+            if (insCom == null)
+            {
+                return NotFound();
+            }
+
+            return View("Details", insCom);
         }
 
         // GET: InsuranceCompanies/Details/5
