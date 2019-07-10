@@ -25,12 +25,6 @@ namespace Clinic.Controllers
             _userManager = userManager;
         }
 
-        // GET: Admins
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Admin.ToListAsync());
-        }
-
         //CreatePeople takes us to the view called Add to create any type of User
         [HttpGet]
         public IActionResult CreatePeople()
@@ -209,75 +203,6 @@ namespace Clinic.Controllers
             return View("Details", admin);
         }
 
-        // GET: Admins/Details/5
-        public async Task<IActionResult> Details(int id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var admin = await _context.Admin
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (admin == null)
-            {
-                return NotFound();
-            }
-
-            return View(admin);
-        }
-
-        // GET: Admins/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var admin = await _context.Admin.FindAsync(id);
-            if (admin == null)
-            {
-                return NotFound();
-            }
-            return View(admin);
-        }
-
-        // POST: Admins/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Firstname,Lastname,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] Admin admin)
-        {
-            if (id != admin.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(admin);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AdminExists(admin.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(admin);
-        }
-
         private bool AdminExists(int id)
         {
             return _context.Admin.Any(e => e.Id == id);
@@ -288,7 +213,7 @@ namespace Clinic.Controllers
             IdentityUser user = new IdentityUser();
             user.Email = userCreationBindingModel.Email;
             user.UserName = userCreationBindingModel.UserName;
-            var Password = "Admin123#";
+            var Password = userCreationBindingModel.Password;
             user.EmailConfirmed = true;
             user.PhoneNumberConfirmed = true;
             user.TwoFactorEnabled = false;
@@ -302,9 +227,9 @@ namespace Clinic.Controllers
             var PasswordHash = hasher.HashPassword(user, Password);
             user.PasswordHash = PasswordHash;
 
-            var createDoctor = _userManager.CreateAsync(user);
-            createDoctor.Wait();
-            if(createDoctor.Result != null)
+            var createUser = _userManager.CreateAsync(user);
+            createUser.Wait();
+            if(createUser.Result != null)
             {
                 return user;
             }

@@ -18,6 +18,7 @@ namespace Clinic.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly string[] BloodTypes = new string[8] { "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-" };
 
         public PatientsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
@@ -32,7 +33,7 @@ namespace Clinic.Controllers
             IList<string> roles = await _userManager.GetRolesAsync(user);
             if (roles.Contains("Administrator"))
             {
-                return View(await _context.Patient.ToListAsync());
+                return View(await _context.Patient.Include(p => p.InsuranceCompany).ToListAsync());
             }
             if (roles.Contains("Doctor"))
             {
@@ -59,7 +60,7 @@ namespace Clinic.Controllers
             List<Patient> patients = new List<Patient>();
             foreach (Consultation c in consultations)
             {
-                patients.Add(_context.Patient.Where(p => p.Id.Equals(c.PatientId)).Single());
+                patients.Add(_context.Patient.Include(p1 => p1.InsuranceCompany).Where(p => p.Id.Equals(c.PatientId)).Single());
             }
             return patients;
         }
@@ -74,6 +75,8 @@ namespace Clinic.Controllers
                 return NotFound();
             }
             var patient = _context.Patient.Where(p => p.UserId.Equals(user.Id)).Single();
+            InsuranceCompany insuranceCompany = _context.InsuranceCompany.Where(i => i.Id.Equals(patient.InsuranceId)).Single();
+            patient.InsuranceCompany = insuranceCompany;
             if (patient == null)
             {
                 return NotFound();
@@ -107,6 +110,7 @@ namespace Clinic.Controllers
         public IActionResult Create()
         {
             ViewData["InsuranceId"] = new SelectList(_context.InsuranceCompany, "Id", "Name");
+            ViewBag.BloodTypes = BloodTypes.Select(bt => new SelectListItem() { Text = bt, Value = bt });
             return View();
         }
 
@@ -158,6 +162,7 @@ namespace Clinic.Controllers
                 return RedirectToAction("Index", "Patients");
             }
             ViewData["InsuranceId"] = new SelectList(_context.InsuranceCompany, "Id", "Name", patientBindingModel.InsuranceId);
+            ViewBag.BloodTypes = BloodTypes.Select(bt => new SelectListItem() { Text = bt, Value = bt });
             return View();
         }
 
@@ -176,7 +181,7 @@ namespace Clinic.Controllers
                 return NotFound();
             }
             ViewData["InsuranceId"] = new SelectList(_context.InsuranceCompany, "Id", "Name", patient.InsuranceId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Firstname", patient.UserId);
+            ViewBag.BloodTypes = BloodTypes.Select(bt => new SelectListItem() { Text = bt, Value = bt });
             return View(patient);
         }
 
@@ -235,7 +240,7 @@ namespace Clinic.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["InsuranceId"] = new SelectList(_context.InsuranceCompany, "Id", "Name", patient.InsuranceId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Firstname", patient.UserId);
+            ViewBag.BloodTypes = BloodTypes.Select(bt => new SelectListItem() { Text = bt, Value = bt });
             return View(patient);
         }
 

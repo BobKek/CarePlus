@@ -3,12 +3,15 @@
 @{
     ViewData["Title"] = "Appointments";
 }
+@if (User.IsInRole("Administrator") || User.IsInRole("Doctor") || User.IsInRole("Assistant"))
+{
+    <h1>Manage Appointments</h1>
 
-<h1>Manage Appointment</h1>
+    <p>
+        <h2><a asp-action="Create">Create New Appointment</a></h2>
+    </p>
+}
 
-<p>
-    <h2><a asp-action="Create">Create New Appointment</a></h2>
-</p>
 <div class="table-container">
     <h2 style="text-align:center;">Appointments</h2>
     <ul class="responsive-table">
@@ -34,26 +37,26 @@
         </li>
         @foreach (var item in Model)
         {
-        <li class="table-row">
-            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.PatientName)">@Html.DisplayFor(modelItem => item.PatientName)</div>
-            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Patient.Firstname)">@Html.DisplayFor(modelItem => item.Patient.Firstname)</div>
-            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Patient.Lastname)">@Html.DisplayFor(modelItem => item.Patient.Lastname)</div>
-            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Doctor.Firstname)">@Html.DisplayFor(modelItem => item.Doctor.Firstname)</div>
-            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Doctor.Lastname)">@Html.DisplayFor(modelItem => item.Doctor.Lastname)</div>
-            <div class="col col-2" data-label="@Html.DisplayNameFor(model => model.Date)">@Html.DisplayFor(modelItem => item.Date)</div>
-            <div class="col col-2" data-label="@Html.DisplayNameFor(model => model.Time)">@Html.DisplayFor(modelItem => item.Time)</div>
-            @if (User.IsInRole("Administrator") || User.IsInRole("Doctor") || User.IsInRole("Assistant"))
-            {
-                <div class="col col-4" data-label="Edit"><a asp-action="Edit" asp-route-id="@item.Id">Edit</a></div>
-                <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
-                <div class="col col-4" data-label="Delete"><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></div>
-            }
-            else
-            {
-                <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
-            }
+            <li class="table-row">
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.PatientName)">@Html.DisplayFor(modelItem => item.PatientName)</div>
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Patient.Firstname)">@Html.DisplayFor(modelItem => item.Patient.Firstname)</div>
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Patient.Lastname)">@Html.DisplayFor(modelItem => item.Patient.Lastname)</div>
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Doctor.Firstname)">@Html.DisplayFor(modelItem => item.Doctor.Firstname)</div>
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Doctor.Lastname)">@Html.DisplayFor(modelItem => item.Doctor.Lastname)</div>
+                <div class="col col-2" data-label="@Html.DisplayNameFor(model => model.Date)">@Html.DisplayFor(modelItem => item.Date)</div>
+                <div class="col col-2" data-label="@Html.DisplayNameFor(model => model.Time)">@Html.DisplayFor(modelItem => item.Time)</div>
+                @if (User.IsInRole("Administrator") || User.IsInRole("Doctor") || User.IsInRole("Assistant"))
+                {
+                    <div class="col col-4" data-label="Edit"><a asp-action="Edit" asp-route-id="@item.Id">Edit</a></div>
+                    <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
+                    <div class="col col-4" data-label="Delete"><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></div>
+                }
+                else
+                {
+                    <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
+                }
 
-        </li>
+            </li>
         }
     </ul>
 </div>

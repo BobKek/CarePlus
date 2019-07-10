@@ -21,14 +21,14 @@
 }
 
 .responsive-table .table-header {
-    background-color: #95A5A6;
+    background-color: #C5DBDF;
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.03em;
 }
 
 .responsive-table .table-row {
-    background-color: #ffffff;
+    background-color: #F3FAFC;
     box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
 }
 

@@ -1,26 +1,16 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
-
-<!DOCTYPE html>
-
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Welcome</title>
+    <title>page</title>
+    <link rel="stylesheet" type="text/css" href="~/css/new.css">
 </head>
-<body style="overflow:hidden;">
-    <img src="~/images/welcomeImage.png" height="100%" width="100%" style="left:0;top:0; position:absolute;" />
+<body>
     <a asp-area="Identity" asp-page="/Account/Login">
-        <div style="
-        position:absolute;
-        top:0;
-        left:0;
-        bottom:0;
-        right:0;
-        height:100%;
-        width:100%;">
+        <div class="container">
+            <span class="text1">Welcome to</span>
+            <span class="text2">CarePlus</span>
         </div>
     </a>
 </body>

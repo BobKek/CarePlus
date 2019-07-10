@@ -42,6 +42,8 @@ namespace Clinic.Controllers
                 return NotFound();
             }
             var assistant = _context.Assistant.Where(a => a.UserId.Equals(user.Id)).Single();
+            Doctor doctor = _context.Doctor.Where(d => d.Id.Equals(assistant.DoctorId)).Single();
+            assistant.Doctor = doctor;
             if (assistant == null)
             {
                 return NotFound();

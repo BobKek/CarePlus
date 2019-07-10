@@ -6,10 +6,6 @@
 
 <h1>Manage Doctors</h1>
 
-<p>
-    <h2><a asp-action="Create">Create New Doctor</a></h2>
-</p>
-
 <form class="search-class" asp-action="SearchDoctor" method="get">
     <input type="text" placeholder="Search..." name="Keyword">
     <button type="submit"><i class="fa fa-search"></i></button>
@@ -51,7 +47,10 @@
                 <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
                 <div class="col col-4" data-label="Delete"><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></div>
             }
-            <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
+            else
+            {
+                <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
+            }
         </li>
         }
     </ul>

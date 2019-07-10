@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Clinic.Models.Reminder>
+
+@{
+    ViewData["Title"] = "Reminders";
+}
+
+<h1>Manage Reminders</h1>
+
+<p>
+    <h2><a asp-action="Create">Create New Reminder</a></h2>
+</p>
+
+<div class="table-container">
+    <h2 style="text-align:center;">Reminders</h2>
+    <ul class="responsive-table" style="width:80%; margin-left:10%;">
+        <li class="table-header">
+            <div class="col col-1">@Html.DisplayNameFor(model => model.Title)</div>
+            <div class="col col-1">@Html.DisplayNameFor(model => model.Content)</div>
+            <div class="col col-3">@Html.DisplayNameFor(model => model.DateTime)</div>
+            <div class="col col-4"></div>
+            <div class="col col-4"></div>
+            <div class="col col-4"></div>
+        </li>
+        @foreach (var item in Model)
+        {
+            <li class="table-row">
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Title)">@Html.DisplayFor(modelItem => item.Title)</div>
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Content)">@Html.DisplayFor(modelItem => item.Content)</div>
+                <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.DateTime)">@Html.DisplayFor(modelItem => item.DateTime)</div>
+                <div class="col col-4" data-label="Edit"><a asp-action="Edit" asp-route-id="@item.Id">Edit</a></div>
+                <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
+                <div class="col col-4" data-label="Delete"><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></div>
+            </li>
+        }
+    </ul>
+</div>

@@ -21,5 +21,6 @@ namespace Clinic.Data
         public DbSet<Clinic.Models.InsuranceCompany> InsuranceCompany { get; set; }
         public DbSet<Clinic.Models.Consultation> Consultation { get; set; }
         public DbSet<Clinic.Models.Message> Message { get; set; }
+        public DbSet<Clinic.Models.Reminder> Reminder { get; set; }
     }
 }

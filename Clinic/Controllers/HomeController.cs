@@ -29,7 +29,7 @@ namespace Clinic.Controllers
             _userManager = _serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }

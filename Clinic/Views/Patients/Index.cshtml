@@ -3,12 +3,17 @@
 @{
     ViewData["Title"] = "Patients";
 }
+@if (User.IsInRole("Administrator") || User.IsInRole("Assistant"))
+{
+    <h1>Manage Patients</h1>
+}
+@if (User.IsInRole("Assistant"))
+{
+    <p>
+        <h2><a asp-action="Create">Create New Patient</a></h2>
+    </p>
+}
 
-<h1>Manage Patients</h1>
-
-<p>
-    <h2><a asp-action="Create">Create New Patient</a></h2>
-</p>
 <div class="table-container">
     <h2 style="text-align:center;">Patients</h2>
     <ul class="responsive-table">
@@ -16,9 +21,9 @@
             <div class="col col-1">@Html.DisplayNameFor(model => model.Firstname)</div>
             <div class="col col-1">@Html.DisplayNameFor(model => model.Lastname)</div>
             <div class="col col-1">@Html.DisplayNameFor(model => model.Email)</div>
-            <div class="col col-2">@Html.DisplayNameFor(model => model.BloodType)</div>
+            <div class="col col-2" style="font-size:80%; margin-top:auto;">@Html.DisplayNameFor(model => model.BloodType)</div>
             <div class="col col-3">@Html.DisplayNameFor(model => model.PhoneNumber)</div>
-            <div class="col col-4">@Html.DisplayNameFor(model => model.InsuranceId)</div>
+            <div class="col col-3">Ins-@Html.DisplayNameFor(model => model.InsuranceCompany.Name)</div>
             @if (User.IsInRole("Administrator") || User.IsInRole("Assistant"))
             {
                 <div class="col col-4"></div>
@@ -32,25 +37,25 @@
         </li>
         @foreach (var item in Model)
         {
-        <li class="table-row">
-            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Firstname)">@Html.DisplayFor(modelItem => item.Firstname)</div>
-            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Lastname)">@Html.DisplayFor(modelItem => item.Lastname)</div>
-            <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Email)">@Html.DisplayFor(modelItem => item.Email)</div>
-            <div class="col col-2" data-label="@Html.DisplayNameFor(model => model.BloodType)">@Html.DisplayFor(modelItem => item.BloodType)</div>
-            <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.PhoneNumber)">@Html.DisplayFor(modelItem => item.PhoneNumber)</div>
-            <div class="col col-4" data-label="@Html.DisplayNameFor(model => model.InsuranceId)">@Html.DisplayFor(modelItem => item.InsuranceId)</div>
-            @if (User.IsInRole("Administrator") || User.IsInRole("Assistant"))
-            {
-                <div class="col col-4" data-label="Edit"><a asp-action="Edit" asp-route-id="@item.Id">Edit</a></div>
-                <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
-                <div class="col col-4" data-label="Delete"><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></div>
-            }
-            else
-            {
-                <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
-            }
+            <li class="table-row">
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Firstname)">@Html.DisplayFor(modelItem => item.Firstname)</div>
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Lastname)">@Html.DisplayFor(modelItem => item.Lastname)</div>
+                <div class="col col-1" data-label="@Html.DisplayNameFor(model => model.Email)">@Html.DisplayFor(modelItem => item.Email)</div>
+                <div class="col col-2" data-label="@Html.DisplayNameFor(model => model.BloodType)">@Html.DisplayFor(modelItem => item.BloodType)</div>
+                <div class="col col-3" data-label="@Html.DisplayNameFor(model => model.PhoneNumber)">@Html.DisplayFor(modelItem => item.PhoneNumber)</div>
+                <div class="col col-3" data-label="Ins-@Html.DisplayNameFor(model => model.InsuranceCompany.Name)">@Html.DisplayFor(modelItem => item.InsuranceCompany.Name)</div>
+                @if (User.IsInRole("Administrator") || User.IsInRole("Assistant"))
+                {
+                    <div class="col col-4" data-label="Edit"><a asp-action="Edit" asp-route-id="@item.Id">Edit</a></div>
+                    <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
+                    <div class="col col-4" data-label="Delete"><a asp-action="Delete" asp-route-id="@item.Id">Delete</a></div>
+                }
+                else
+                {
+                    <div class="col col-4" data-label="Details"><a asp-action="Details" asp-route-id="@item.Id">Details</a></div>
+                }
 
-        </li>
+            </li>
         }
     </ul>
 </div>

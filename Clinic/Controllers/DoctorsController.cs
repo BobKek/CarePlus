@@ -31,11 +31,6 @@ namespace Clinic.Controllers
             return View(await _context.Doctor.ToListAsync());
         }
 
-        public IActionResult SearchDoctor()
-        {
-            return View("Index", "Home");
-        }
-
         [HttpGet]
         [Authorize(Roles = "Administrator, Patient")]
         public IActionResult SearchDoctor(string Keyword)
@@ -74,7 +69,7 @@ namespace Clinic.Controllers
             {
                 return NotFound();
             }
-            var doctor = _context.Assistant.Where(d => d.UserId.Equals(user.Id)).Single();
+            var doctor = _context.Doctor.Where(d => d.UserId.Equals(user.Id)).Single();
             if (doctor == null)
             {
                 return NotFound();

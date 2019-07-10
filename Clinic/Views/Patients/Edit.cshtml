@@ -29,8 +29,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="BloodType" class="control-label"></label>
-                <input asp-for="BloodType" class="form-control" />
-                <span asp-validation-for="BloodType" class="text-danger"></span>
+                <select asp-for="BloodType" class="form-control" asp-items="ViewBag.BloodTypes"></select>
             </div>
             <div class="form-group">
                 <label asp-for="InsuranceId" class="control-label"></label>
